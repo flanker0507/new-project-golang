@@ -5,32 +5,64 @@ import "fmt"
 const (
 	dollarToRupiah    = 15000
 	euroToRupiah      = 17000
-	gpbToRupiah       = 20000
+	gbpToRupiah       = 20000
 	jpyToRupiah       = 104
-	maxDollarExcahnge = 1000
+	maxDollarExchange = 1000
 )
 
 func main() {
-	saldoDollar := 12
-	//fmt.Printf("masukkan jumlah uang: %d\n", saldoDollar)
-	//fmt.Scan(&saldoDollar)
 
-	fmt.Println("saldo dollar awal : ", saldoDollar)
+	var saldoRupiah float64
+	var currencyType, choice string
 
-	saldoRupiah := exchangeDollarToRupiah(float64(saldoDollar))
+	for {
+		fmt.Println("masukkan jumlah: ")
+		_, err := fmt.Scan(&saldoRupiah)
+		if err != nil {
+			continue
+		}
 
-	fmt.Println("Saldo rupiah : ", saldoRupiah)
+		if saldoRupiah > maxDollarExchange {
+			fmt.Println("Maaf tidak bisa menukar lebih dari 100")
+			continue
+		}
+
+		fmt.Println("Choose Currncy Type (USD, EUR, GPB, JPY)")
+		_, err = fmt.Scan(&currencyType)
+		if err != nil {
+			continue
+		}
+
+		saldoDollar, err := exchangeDollarToRupiah(saldoRupiah, currencyType)
+		if err != nil {
+			continue
+		}
+
+		fmt.Printf("Balance in Rupiah: %.2f\n", saldoDollar)
+
+		fmt.Println("do you want currenncy again? (yes/no)")
+		fmt.Scan(&choice)
+		if choice != "yes" {
+			break
+		}
+
+	}
 
 }
 
-func exchangeDollarToRupiah(dollar float64) (rupiah float64) {
-	if dollar > maxDollarExcahnge {
-		fmt.Println("Maaf tidak bisa menukar lebih dari 100")
-	}
-	rupiah = dollar * dollarToRupiah
-	rupiah = dollar * euroToRupiah
-	rupiah = dollar * gpbToRupiah
-	rupiah = dollar * jpyToRupiah
+func exchangeDollarToRupiah(dollar float64, currency string) (rupiah float64, err error) {
 
-	return
+	switch currency {
+	case "USD":
+		rupiah = dollar * dollarToRupiah
+	case "EUR":
+		rupiah = dollar * euroToRupiah
+	case "GPB":
+		rupiah = dollar * gbpToRupiah
+	case "JPY":
+		rupiah = dollar * jpyToRupiah
+	default:
+		fmt.Println("currency not found")
+	}
+	return rupiah, nil
 }
